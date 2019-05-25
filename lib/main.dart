@@ -24,7 +24,6 @@ class _MyAppState extends State<MyApp> {
       await prefs.setInt('launch', launch+1);
     }
     setState(() {
-      launch = 0;
       loading = false;
     });
   }

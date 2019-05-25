@@ -110,11 +110,7 @@ class _AddPasswordState extends State<AddPassword> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TextFormField(
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return 'Please enter valid Username or Email';
-                          }
-                        },
+                       
                         decoration: InputDecoration(
                             labelText: "User Name/Email (if available)",
                             labelStyle: TextStyle(fontFamily: "Subtitle"),

@@ -16,6 +16,34 @@ class PasswordHomepage extends StatefulWidget {
 }
 
 class _PasswordHomepageState extends State<PasswordHomepage> {
+  int pickedIcon;
+
+  List<Icon> icons = [
+    Icon(Icons.account_circle, size: 28, color: Colors.white),
+    Icon(Icons.add, size: 28, color: Colors.white),
+    Icon(Icons.access_alarms, size: 28, color: Colors.white),
+    Icon(Icons.ac_unit, size: 28, color: Colors.white),
+    Icon(Icons.accessible, size: 28, color: Colors.white),
+    Icon(Icons.account_balance, size: 28, color: Colors.white),
+    Icon(Icons.add_circle_outline, size: 28, color: Colors.white),
+    Icon(Icons.airline_seat_individual_suite, size: 28, color: Colors.white),
+    Icon(Icons.arrow_drop_down_circle, size: 28, color: Colors.white),
+    Icon(Icons.assessment, size: 28, color: Colors.white),
+  ];
+
+  List<String> iconNames = [
+    "Icon 1",
+    "Icon 2",
+    "Icon 3",
+    "Icon 4",
+    "Icon 5",
+    "Icon 6",
+    "Icon 7",
+    "Icon 8",
+    "Icon 9",
+    "Icon 10",
+  ];
+
   final bloc = PasswordBloc();
 
   @override
@@ -42,10 +70,9 @@ class _PasswordHomepageState extends State<PasswordHomepage> {
                   children: <Widget>[
                     Text("Cipherly",
                         style: TextStyle(
-                          fontFamily: "Title",
-                          fontSize: 32,
-                          color: primaryColor
-                        )),
+                            fontFamily: "Title",
+                            fontSize: 32,
+                            color: primaryColor)),
                     IconButton(
                       icon: Icon(
                         Icons.settings,
@@ -72,6 +99,17 @@ class _PasswordHomepageState extends State<PasswordHomepage> {
                       itemCount: snapshot.data.length,
                       itemBuilder: (BuildContext context, int index) {
                         Password password = snapshot.data[index];
+
+                        int i = 0;
+                        while (i < iconNames.length) {
+                          if (password.icon == iconNames[i]) {
+                            break;
+                          }
+                          i++;
+                        }
+
+                        Color color = hexToColor(password.color);
+
                         return InkWell(
                           onTap: () {
                             Navigator.push(
@@ -90,10 +128,10 @@ class _PasswordHomepageState extends State<PasswordHomepage> {
                               ),
                             ),
                             leading: Container(
-                                height: 36,
-                                width: 36,
-                                child: Icon(Icons.account_circle,
-                                    size: 36, color: Colors.black)),
+                                height: 48,
+                                width: 48,
+                                child: CircleAvatar(
+                                    backgroundColor: color, child: icons[i])),
                             subtitle: password.userName != ""
                                 ? Text(
                                     password.userName,
@@ -129,7 +167,7 @@ class _PasswordHomepageState extends State<PasswordHomepage> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-backgroundColor: primaryColor,
+        backgroundColor: primaryColor,
         child: Icon(Icons.add),
         onPressed: () async {
           Navigator.push(
@@ -139,5 +177,9 @@ backgroundColor: primaryColor,
         },
       ),
     );
+  }
+
+  Color hexToColor(String code) {
+    return new Color(int.parse(code.substring(1, 9), radix: 16) + 0xFF000000);
   }
 }
