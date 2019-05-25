@@ -1,4 +1,5 @@
 import 'package:cipherly/database/Database.dart';
+import 'package:cipherly/pages/GreetingsPage.dart';
 import 'package:cipherly/pages/PasswordHomepage.dart';
 import 'package:cipherly/pages/SetMasterPassword.dart';
 import 'package:flutter/material.dart';
@@ -20,9 +21,10 @@ class _MyAppState extends State<MyApp> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     launch = prefs.getInt("launch") ?? 0;
     if (launch == 0) {
-      await prefs.setInt('launch', launch++);
+      await prefs.setInt('launch', launch+1);
     }
     setState(() {
+      launch = 0;
       loading = false;
     });
   }
@@ -36,15 +38,18 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Cipherly',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        fontFamily: "Title",
+        primaryColor: Color(0xff5153FF),
+        primaryColorDark: Color(0xff0029cb)
       ),
       home: loading
           ? Center(
               child: CircularProgressIndicator(),
             )
-          : launch == 0 ? SetMasterPassword() : PasswordHomepage(),
+          : launch == 0 ? GreetingsPage() : PasswordHomepage(),
     );
   }
 }
