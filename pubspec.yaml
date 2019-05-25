@@ -27,6 +27,7 @@ dependencies:
   sqflite: any
   get_it: any
   encrypt:
+  path_provider: ^1.1.0
 
 dev_dependencies:
   flutter_test:

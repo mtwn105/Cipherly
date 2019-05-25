@@ -1,7 +1,10 @@
+import 'package:cipherly/database/Database.dart';
 import 'package:cipherly/pages/PasswordHomepage.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
