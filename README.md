@@ -19,10 +19,11 @@ A Master Password is used to encrypt the passwords and it can be only decrypted 
 - [ ] Add Fingerprint or Custom Pin Lock to secure all passwords
 
 ## Screenshots
-![Semantic description of image](/assets/Screenshots/6.jpg "Welcome Screen" =100x20)
-![Semantic description of image](/assets/Screenshots/1.jpg "Welcome Screen" =100x20)
-![Semantic description of image](/assets/Screenshots/2.jpg "Welcome Screen" =100x20)
-![Semantic description of image](/assets/Screenshots/3.jpg "Welcome Screen" =100x20)
-![Semantic description of image](/assets/Screenshots/4.jpg "Welcome Screen" =100x20)
-![Semantic description of image](/assets/Screenshots/5.jpg "Welcome Screen" =100x20)
+
+<img src="/assets/Screenshots/6.jpg" width="200px" height="411px" /> 
+<img src="/assets/Screenshots/1.jpg" width="200px" height="411px" />
+<img src="/assets/Screenshots/2.jpg" width="200px" height="411px" />
+<img src="/assets/Screenshots/3.jpg" width="200px" height="411px" />
+<img src="/assets/Screenshots/4.jpg" width="200px" height="411px" />
+<img src="/assets/Screenshots/5.jpg" width="200px" height="411px" />
 
