@@ -35,7 +35,7 @@ class _ViewPasswordState extends State<ViewPassword> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Text("App Name: ${password.appName}"),
+            Text("User Name: ${password.userName}"),
             Text("Password: ${password.password}"),
             Padding(
               padding: const EdgeInsets.all(8.0),

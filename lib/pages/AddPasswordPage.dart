@@ -3,6 +3,7 @@ import 'package:cipherly/model/PasswordModel.dart';
 import 'package:cipherly/pages/PasswordHomepage.dart';
 import 'package:flutter/material.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddPassword extends StatefulWidget {
   AddPassword({Key key}) : super(key: key);
@@ -13,12 +14,26 @@ class AddPassword extends StatefulWidget {
 class _AddPasswordState extends State<AddPassword> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController appNameController = TextEditingController();
-  TextEditingController masterPassController = TextEditingController();
+  TextEditingController userNameController = TextEditingController();
 
   encrypt.Encrypted encrypted;
   String keyString = "";
   String encryptedString = "";
   String decryptedString = "";
+  String masterPassString = "";
+
+  Future<Null> getMasterPass() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String masterPass = prefs.getString('master') ?? "";
+    masterPassString = masterPass;
+  }
+  
+  @override
+  void initState() {
+    getMasterPass();
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +58,16 @@ class _AddPasswordState extends State<AddPassword> {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
+                decoration: InputDecoration(
+                    hintText: "User Name/Email (if available)",
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16))),
+                controller: userNameController,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
                 obscureText: true,
                 decoration: InputDecoration(
                     hintText: "Password",
@@ -51,22 +76,8 @@ class _AddPasswordState extends State<AddPassword> {
                 controller: passwordController,
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextField(
-              
-                maxLength: 32,
-                decoration: InputDecoration(
-                    hintText: "Master Pass",
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(16))),
-                controller: masterPassController,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text("Encrypted: $encryptedString"),
-            ),
+           
+           
           ],
         ),
       ),
@@ -76,26 +87,28 @@ class _AddPasswordState extends State<AddPassword> {
           encryptPass(passwordController.text);
           Password password = new Password(
               appName: appNameController.text,
-              password: encryptedString);
+              password: encryptedString,
+              userName: userNameController.text);
           DBProvider.db.newPassword(password);
-            Navigator.pushReplacement(
+          Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                  builder: (BuildContext context) => PasswordHomepage()));
+                  builder: (BuildContext context) => PasswordHomepage()),
+              (Route<dynamic> route) => false);
         },
       ),
     );
   }
 
   encryptPass(String text) {
-    keyString = masterPassController.text;
-    if(keyString.length<32){
+    keyString = masterPassString;
+    if (keyString.length < 32) {
       int count = 32 - keyString.length;
       for (var i = 0; i < count; i++) {
         keyString += ".";
       }
     }
-  final key = encrypt.Key.fromUtf8(keyString);
+    final key = encrypt.Key.fromUtf8(keyString);
     final plainText = text;
     final iv = encrypt.IV.fromLength(16);
 
@@ -103,6 +116,4 @@ class _AddPasswordState extends State<AddPassword> {
     final e = encrypter.encrypt(plainText, iv: iv);
     encryptedString = e.base64.toString();
   }
-
- 
 }

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 
 import 'AddPasswordPage.dart';
+import 'SettingsPage.dart';
 
 class PasswordHomepage extends StatefulWidget {
   @override
@@ -25,39 +26,90 @@ class _PasswordHomepageState extends State<PasswordHomepage> {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text("cipherly"),
-      ),
-      body: StreamBuilder<List<Password>>(
-        stream: bloc.passwords,
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasData) {
-            return ListView.builder(
-              itemCount: snapshot.data.length,
-              itemBuilder: (BuildContext context, int index) {
-                Password password = snapshot.data[index];
-                return InkWell(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) => ViewPassword(
-                                  password: password,
-                                )));
-                  },
-                  child: ListTile(
-                    title: Text(password.appName),
-                    leading: Text(password.id.toString()),
-                    subtitle: Text(password.password),
-                  ),
-                );
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+            child: Container(
+                margin: EdgeInsets.only(top: size.height * 0.05),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text("Cipherly",
+                        style: TextStyle(
+                            fontFamily: "GoogleSans",
+                            fontSize: 32,)),
+                    IconButton(
+                      icon: Icon(
+                        Icons.settings,
+                        color: Colors.black,
+                      ),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    SettingsPage()));
+                      },
+                    )
+                  ],
+                )),
+          ),
+          Expanded(
+            child: StreamBuilder<List<Password>>(
+              stream: bloc.passwords,
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      Password password = snapshot.data[index];
+                      return InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      ViewPassword(
+                                        password: password,
+                                      )));
+                        },
+                        child: ListTile(
+                          title: Text(
+                            password.appName,
+                            style: TextStyle(
+                                fontFamily: 'Title',),
+                          ),
+                          leading: Container(
+                              height: 36,
+                              width: 36,
+                              child: Icon(Icons.account_circle,
+                                  size: 36, color: Colors.black)),
+                          subtitle:   password.userName!="" ? Text(
+                            password.userName,
+                            style: TextStyle(
+                              fontFamily: 'Subtitle',
+                            ),
+                          ): Text(
+                            "No username specified",style: TextStyle(
+                              fontFamily: 'Subtitle',
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                } else {
+                  return Center(child: CircularProgressIndicator());
+                }
               },
-            );
-          } else {
-            return Center(child: CircularProgressIndicator());
-          }
-        },
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),

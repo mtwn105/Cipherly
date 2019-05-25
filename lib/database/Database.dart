@@ -28,7 +28,8 @@ class DBProvider {
       await db.execute("CREATE TABLE Passwords ("
           "id INTEGER PRIMARY KEY AUTOINCREMENT,"
           "app_name TEXT,"
-          "password TEXT"
+          "password TEXT,"
+          "user_name TEXT"
           ")");
     });
   }
