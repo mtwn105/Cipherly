@@ -13,9 +13,10 @@ class AddPassword extends StatefulWidget {
 class _AddPasswordState extends State<AddPassword> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController appNameController = TextEditingController();
+  TextEditingController masterPassController = TextEditingController();
 
   encrypt.Encrypted encrypted;
-  final key = encrypt.Key.fromUtf8('my 32 length key................');
+  String keyString = "";
   String encryptedString = "";
   String decryptedString = "";
 
@@ -52,6 +53,18 @@ class _AddPasswordState extends State<AddPassword> {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
+              child: TextField(
+              
+                maxLength: 32,
+                decoration: InputDecoration(
+                    hintText: "Master Pass",
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16))),
+                controller: masterPassController,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
               child: Text("Encrypted: $encryptedString"),
             ),
           ],
@@ -75,6 +88,14 @@ class _AddPasswordState extends State<AddPassword> {
   }
 
   encryptPass(String text) {
+    keyString = masterPassController.text;
+    if(keyString.length<32){
+      int count = 32 - keyString.length;
+      for (var i = 0; i < count; i++) {
+        keyString += ".";
+      }
+    }
+  final key = encrypt.Key.fromUtf8(keyString);
     final plainText = text;
     final iv = encrypt.IV.fromLength(16);
 

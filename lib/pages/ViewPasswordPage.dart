@@ -15,13 +15,12 @@ class _ViewPasswordState extends State<ViewPassword> {
   final Password password;
   _ViewPasswordState(this.password);
 
+  TextEditingController masterPassController = TextEditingController();
+
   String decrypted = "";
-  final key = encrypt.Key.fromUtf8('my 32 length key................');
-  
 
   @override
   void initState() {
-    decryptPass(password.password);
     super.initState();
   }
 
@@ -38,19 +37,53 @@ class _ViewPasswordState extends State<ViewPassword> {
           children: <Widget>[
             Text("App Name: ${password.appName}"),
             Text("Password: ${password.password}"),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                maxLength: 32,
+                decoration: InputDecoration(
+                    hintText: "Master Pass",
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16))),
+                controller: masterPassController,
+              ),
+            ),
+            MaterialButton(
+              color: Colors.blue,
+              child: Text("DECRYPT"),
+              onPressed: () {
+                decryptPass(password.password);
+              },
+            ),
             Text("Decrypted Password: $decrypted"),
           ],
         ),
       ),
     );
   }
-   decryptPass(String encryptedPass) {
-    final iv = encrypt.IV.fromLength(16);
 
-    final encrypter = encrypt.Encrypter(encrypt.AES(key));
-    final d = encrypter.decrypt64(encryptedPass, iv: iv);
-setState(() {
- decrypted = d; 
-});
+  decryptPass(String encryptedPass) {
+    String keyString = masterPassController.text;
+    if (keyString.length < 32) {
+      int count = 32 - keyString.length;
+      for (var i = 0; i < count; i++) {
+        keyString += ".";
+      }
+    }
+
+    final iv = encrypt.IV.fromLength(16);
+    final key = encrypt.Key.fromUtf8(keyString);
+
+    try {
+      final encrypter = encrypt.Encrypter(encrypt.AES(key));
+      final d = encrypter.decrypt64(encryptedPass, iv: iv);
+      setState(() {
+        decrypted = d;
+      });
+    } catch (exception) {
+      setState(() {
+       decrypted = "Wrong Master Password";
+      });
+    }
   }
 }
