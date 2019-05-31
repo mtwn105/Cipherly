@@ -75,7 +75,7 @@ class _ViewPasswordState extends State<ViewPassword> {
 
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: Colors.white,
+      // backgroundColor: Colors.white,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -126,7 +126,8 @@ class _ViewPasswordState extends State<ViewPassword> {
                     style: TextStyle(
                         fontFamily: 'Subtitle',
                         fontSize: 20,
-                        color: Colors.black54),
+                        // color: Colors.black54
+                        ),
                   ),
                 ),
                 Row(
@@ -151,7 +152,8 @@ class _ViewPasswordState extends State<ViewPassword> {
                             style: TextStyle(
                                 fontFamily: 'Subtitle',
                                 fontSize: 20,
-                                color: Colors.black54),
+                                // color: Colors.black54
+                                ),
                           ),
                         ),
                       ],

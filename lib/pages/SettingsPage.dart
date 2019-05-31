@@ -1,5 +1,6 @@
 import 'package:cipherly/pages/SetMasterPassword.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -7,9 +8,17 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+
+  @override
+  void initState() {
+    super.initState();
+
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
+    
 
     return Scaffold(
     body: Column(
@@ -47,7 +56,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
           ),
-        )
+        ),
       ],
     ));
   }
