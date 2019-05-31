@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:cipherly/bloc/PasswordBloc.dart';
 import 'package:cipherly/database/Database.dart';
 import 'package:cipherly/model/PasswordModel.dart';
@@ -57,6 +55,8 @@ class _PasswordHomepageState extends State<PasswordHomepage> {
     var size = MediaQuery.of(context).size;
     Color primaryColor = Theme.of(context).primaryColor;
 
+    print(iconNames.indexOf('Icon 10'));
+
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,52 +99,66 @@ class _PasswordHomepageState extends State<PasswordHomepage> {
                       itemCount: snapshot.data.length,
                       itemBuilder: (BuildContext context, int index) {
                         Password password = snapshot.data[index];
-
                         int i = 0;
-                        while (i < iconNames.length) {
-                          if (password.icon == iconNames[i]) {
-                            break;
-                          }
-                          i++;
-                        }
-
+                        i = iconNames.indexOf(password.icon);
                         Color color = hexToColor(password.color);
-
-                        return InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        ViewPassword(
-                                          password: password,
-                                        )));
+                        return Dismissible(
+                          key: ObjectKey(password.id),
+                          onDismissed: (direction) {
+                            var item = password;
+                            //To delete
+                            DBProvider.db.deletePassword(item.id);
+                            setState(() {
+                              snapshot.data.removeAt(index);
+                            });
+                            //To show a snackbar with the UNDO button
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                                content: Text("Item deleted"),
+                                action: SnackBarAction(
+                                    label: "UNDO",
+                                    onPressed: () {
+                                      DBProvider.db.newPassword(item);
+                                      setState(() {
+                                        snapshot.data.insert(index, item);
+                                      });
+                                    })));
                           },
-                          child: ListTile(
-                            title: Text(
-                              password.appName,
-                              style: TextStyle(
-                                fontFamily: 'Title',
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          ViewPassword(
+                                            password: password,
+                                          )));
+                            },
+                            child: ListTile(
+                              title: Text(
+                                password.appName,
+                                style: TextStyle(
+                                  fontFamily: 'Title',
+                                ),
                               ),
+                              leading: Container(
+                                  height: 48,
+                                  width: 48,
+                                  child: CircleAvatar(
+                                      backgroundColor: color, child: icons[i])),
+                              subtitle: password.userName != ""
+                                  ? Text(
+                                      password.userName,
+                                      style: TextStyle(
+                                        fontFamily: 'Subtitle',
+                                      ),
+                                    )
+                                  : Text(
+                                      "No username specified",
+                                      style: TextStyle(
+                                        fontFamily: 'Subtitle',
+                                      ),
+                                    ),
                             ),
-                            leading: Container(
-                                height: 48,
-                                width: 48,
-                                child: CircleAvatar(
-                                    backgroundColor: color, child: icons[i])),
-                            subtitle: password.userName != ""
-                                ? Text(
-                                    password.userName,
-                                    style: TextStyle(
-                                      fontFamily: 'Subtitle',
-                                    ),
-                                  )
-                                : Text(
-                                    "No username specified",
-                                    style: TextStyle(
-                                      fontFamily: 'Subtitle',
-                                    ),
-                                  ),
                           ),
                         );
                       },

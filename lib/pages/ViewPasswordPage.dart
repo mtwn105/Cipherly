@@ -57,13 +57,13 @@ class _ViewPasswordState extends State<ViewPassword> {
   void initState() {
     print(password.color);
     color = hexToColor(password.color);
-    index = 0;
-    while (index < iconNames.length) {
-      if (password.icon == iconNames[index]) {
-        break;
-      }
-      index++;
-    }
+    index = iconNames.indexOf(password.icon);
+    // while (index < iconNames.length) {
+    //   if (password.icon == iconNames[index]) {
+    //     break;
+    //   }
+    //   index++;
+    // }
     print(color);
     super.initState();
   }
@@ -75,6 +75,7 @@ class _ViewPasswordState extends State<ViewPassword> {
 
     return Scaffold(
       key: scaffoldKey,
+      backgroundColor: Colors.white,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,8 +87,8 @@ class _ViewPasswordState extends State<ViewPassword> {
               decoration: BoxDecoration(
                   color: color,
                   borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(16),
-                      bottomRight: Radius.circular(16))),
+                      bottomLeft: Radius.circular(30),
+                      bottomRight: Radius.circular(30))),
               child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -139,7 +140,8 @@ class _ViewPasswordState extends State<ViewPassword> {
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
                             "Password",
-                            style: TextStyle(fontFamily: 'Title', fontSize: 20),
+                            style: TextStyle(
+                                fontFamily: 'Title', fontSize: 20),
                           ),
                         ),
                         Padding(
@@ -199,7 +201,8 @@ class _ViewPasswordState extends State<ViewPassword> {
                                               content: Text(
                                                   'Wrong Master Password',
                                                   style: TextStyle(
-                                                      fontFamily: "Subtitle")));
+                                                      fontFamily:
+                                                          "Subtitle")));
 
                                           scaffoldKey.currentState
                                               .showSnackBar(snackBar);
@@ -212,7 +215,9 @@ class _ViewPasswordState extends State<ViewPassword> {
                               });
                         }
                       },
-                      icon: decrypt ? Icon(Icons.lock_open) : Icon(Icons.lock),
+                      icon: decrypt
+                          ? Icon(Icons.lock_open)
+                          : Icon(Icons.lock),
                     )
                   ],
                 ),

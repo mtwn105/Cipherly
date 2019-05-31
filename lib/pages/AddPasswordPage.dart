@@ -90,124 +90,128 @@ class _AddPasswordState extends State<AddPassword> {
             Form(
                 key: _formKey,
                 child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return 'Please enter valid title';
-                          }
-                        },
-                        decoration: InputDecoration(
-                            labelText: "Title",
-                            labelStyle: TextStyle(fontFamily: "Subtitle"),
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16))),
-                        controller: appNameController,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: TextFormField(
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Please enter valid title';
+                      }
+                    },
+                    decoration: InputDecoration(
+                        labelText: "Title",
+                        labelStyle: TextStyle(fontFamily: "Subtitle"),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16))),
+                    controller: appNameController,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: TextFormField(
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Please enter valid Username';
+                      }
+                    },
+                    decoration: InputDecoration(
+                        labelText: "User Name/Email (if available)",
+                        labelStyle: TextStyle(fontFamily: "Subtitle"),
+                        // errorText: 'abc',
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16))),
+                    controller: userNameController,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    validator: (value) {
+                      if (value.isEmpty) {
+                        return 'Please enter valid password';
+                      }
+                    },
+                    obscureText: true,
+                    decoration: InputDecoration(
+                        labelText: "Password",
+                        labelStyle: TextStyle(fontFamily: "Subtitle"),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(16))),
+                    controller: passwordController,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Pick an Icon",
+                          style: TextStyle(fontFamily: 'Title', fontSize: 20),
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
-                       
-                        decoration: InputDecoration(
-                            labelText: "User Name/Email (if available)",
-                            labelStyle: TextStyle(fontFamily: "Subtitle"),
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16))),
-                        controller: userNameController,
+                      Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Material(
+                          shape: CircleBorder(),
+                          elevation: 4.0,
+                          child: CircleAvatar(
+                              backgroundColor: primaryColor,
+                              radius: 26,
+                              child: icons[pickedIcon]),
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextFormField(
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return 'Please enter valid password';
-                          }
-                        },
-                        obscureText: true,
-                        decoration: InputDecoration(
-                            labelText: "Password",
-                            labelStyle: TextStyle(fontFamily: "Subtitle"),
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(16))),
-                        controller: passwordController,
-                      ),
-                    ),
-                  
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              "Pick an Icon",
-                              style:
-                                  TextStyle(fontFamily: 'Title', fontSize: 20),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Material(
-                              shape: CircleBorder(),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(24.0, 0, 24, 16),
+                  child: GridView.count(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      crossAxisCount: 5,
+                      crossAxisSpacing: 2,
+                      mainAxisSpacing: 15,
+                      childAspectRatio: 1.3,
+                      children: List.generate(icons.length, (index) {
+                        return InkWell(
+                          onTap: () {
+                            setState(() {
+                              pickedIcon = index;
+                            });
+                          },
+                          child: Material(
                               elevation: 4.0,
-                              child: CircleAvatar(
-                                  backgroundColor: primaryColor,
-                                  radius: 26,
-                                  child: icons[pickedIcon]),
-                            ),
-                          ),
-                        ],
+                              color: primaryColor,
+                              shape: CircleBorder(),
+                              child: icons[index]),
+                        );
+                      })),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Pick a Color",
+                          style: TextStyle(fontFamily: 'Title', fontSize: 20),
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(24.0, 0, 24, 16),
-                      child: GridView.count(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.vertical,
-                          crossAxisCount: 5,
-                          crossAxisSpacing: 2,
-                          mainAxisSpacing: 5,
-                          childAspectRatio: 1.3,
-                          children: List.generate(icons.length, (index) {
-                            return InkWell(
-                              onTap: () {
-                                setState(() {
-                                  pickedIcon = index;
-                                });
-                              },
-                              child: Material(
-                                  color: primaryColor,
-                                  shape: CircleBorder(),
-                                  child: icons[index]),
-                            );
-                          })),
-                    ),  Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              "Pick a Color",
-                              style:
-                                  TextStyle(fontFamily: 'Title', fontSize: 20),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    MaterialColorPicker(
-                        onColorChange: (Color color) {
-                          pickedColor = color;
-                        },
-                        selectedColor: Colors.red),
-                  ],
-                )),
+                    ],
+                  ),
+                ),
+                MaterialColorPicker(
+                    onColorChange: (Color color) {
+                      pickedColor = color;
+                    },
+                    selectedColor: Colors.red),
+              ],
+            )),
           ],
         ),
       ),
@@ -229,8 +233,8 @@ class _AddPasswordState extends State<AddPassword> {
                 MaterialPageRoute(
                     builder: (BuildContext context) => PasswordHomepage()),
                 (Route<dynamic> route) => false);
-          }else{
-             print(pickedColor);
+          } else {
+            print(pickedColor);
           }
         },
       ),
