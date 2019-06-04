@@ -1,7 +1,11 @@
 import 'package:cipherly/model/PasswordModel.dart';
 import 'package:flutter/material.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:sqflite/utils/utils.dart';
+
+import 'PasswordHomepage.dart';
 
 class ViewPassword extends StatefulWidget {
   final Password password;
@@ -53,18 +57,27 @@ class _ViewPasswordState extends State<ViewPassword> {
     return new Color(int.parse(code.substring(1, 9), radix: 16) + 0xFF000000);
   }
 
+  bool didAuthenticate = false;
+
+  authenticate() async {
+    var localAuth = LocalAuthentication();
+    didAuthenticate = await localAuth.authenticateWithBiometrics(
+        localizedReason: 'Please authenticate to view password',
+        stickyAuth: true);
+  }
+
+  Future<String> getMasterPass() async {
+    final storage = new FlutterSecureStorage();
+    String masterPass = await storage.read(key: 'master') ?? '';
+    return masterPass;
+  }
+
   @override
   void initState() {
     print(password.color);
     color = hexToColor(password.color);
     index = iconNames.indexOf(password.icon);
-    // while (index < iconNames.length) {
-    //   if (password.icon == iconNames[index]) {
-    //     break;
-    //   }
-    //   index++;
-    // }
-    print(color);
+    authenticate();
     super.initState();
   }
 
@@ -124,10 +137,10 @@ class _ViewPasswordState extends State<ViewPassword> {
                   child: Text(
                     password.userName,
                     style: TextStyle(
-                        fontFamily: 'Subtitle',
-                        fontSize: 20,
-                        // color: Colors.black54
-                        ),
+                      fontFamily: 'Subtitle',
+                      fontSize: 20,
+                      // color: Colors.black54
+                    ),
                   ),
                 ),
                 Row(
@@ -141,8 +154,7 @@ class _ViewPasswordState extends State<ViewPassword> {
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
                             "Password",
-                            style: TextStyle(
-                                fontFamily: 'Title', fontSize: 20),
+                            style: TextStyle(fontFamily: 'Title', fontSize: 20),
                           ),
                         ),
                         Padding(
@@ -150,76 +162,28 @@ class _ViewPasswordState extends State<ViewPassword> {
                           child: Text(
                             decrypt ? decrypted : password.password,
                             style: TextStyle(
-                                fontFamily: 'Subtitle',
-                                fontSize: 20,
-                                // color: Colors.black54
-                                ),
+                              fontFamily: 'Subtitle',
+                              fontSize: 20,
+                              // color: Colors.black54
+                            ),
                           ),
                         ),
                       ],
                     ),
                     IconButton(
-                      onPressed: () {
-                        if (!decrypt) {
-                          showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: Text("Enter Master Password"),
-                                  content: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      Text(
-                                        "To decrypt the password enter your master password:",
-                                        style: TextStyle(
-                                            fontFamily: 'Subtitle',
-                                            color: Colors.black54),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: TextField(
-                                          obscureText: true,
-                                          maxLength: 32,
-                                          decoration: InputDecoration(
-                                              hintText: "Master Pass",
-                                              hintStyle: TextStyle(
-                                                  fontFamily: "Subtitle"),
-                                              border: OutlineInputBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          16))),
-                                          controller: masterPassController,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  actions: <Widget>[
-                                    FlatButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                        decryptPass(password.password);
-                                        if (!decrypt) {
-                                          final snackBar = SnackBar(
-                                              content: Text(
-                                                  'Wrong Master Password',
-                                                  style: TextStyle(
-                                                      fontFamily:
-                                                          "Subtitle")));
-
-                                          scaffoldKey.currentState
-                                              .showSnackBar(snackBar);
-                                        }
-                                      },
-                                      child: Text("DONE"),
-                                    )
-                                  ],
-                                );
-                              });
+                      onPressed: () async {
+                        if (!decrypt && !didAuthenticate) {
+                          buildShowDialogBox(context);
+                        } else if (!decrypt && didAuthenticate) {
+                          String masterPass = await getMasterPass();
+                          decryptPass(password.password, masterPass);
+                        } else if (decrypt) {
+                          setState(() {
+                            decrypt = !decrypt;
+                          });
                         }
                       },
-                      icon: decrypt
-                          ? Icon(Icons.lock_open)
-                          : Icon(Icons.lock),
+                      icon: decrypt ? Icon(Icons.lock_open) : Icon(Icons.lock),
                     )
                   ],
                 ),
@@ -231,8 +195,61 @@ class _ViewPasswordState extends State<ViewPassword> {
     );
   }
 
-  decryptPass(String encryptedPass) {
-    String keyString = masterPassController.text;
+  Future buildShowDialogBox(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Enter Master Password"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(
+                "To decrypt the password enter your master password:",
+                style: TextStyle(fontFamily: 'Subtitle', color: Colors.black54),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  obscureText: true,
+                  maxLength: 32,
+                  decoration: InputDecoration(
+                      hintText: "Master Pass",
+                      hintStyle: TextStyle(fontFamily: "Subtitle"),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16))),
+                  controller: masterPassController,
+                ),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            FlatButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                decryptPass(
+                    password.password, masterPassController.text.trim());
+                masterPassController.clear();
+                if (!decrypt) {
+                  final snackBar = SnackBar(
+                    content: Text(
+                      'Wrong Master Password',
+                      style: TextStyle(fontFamily: "Subtitle"),
+                    ),
+                  );
+                  scaffoldKey.currentState.showSnackBar(snackBar);
+                }
+              },
+              child: Text("DONE"),
+            )
+          ],
+        );
+      },
+    );
+  }
+
+  decryptPass(String encryptedPass, String masterPass) {
+    String keyString = masterPass;
     if (keyString.length < 32) {
       int count = 32 - keyString.length;
       for (var i = 0; i < count; i++) {

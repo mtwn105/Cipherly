@@ -60,7 +60,7 @@ class _PasswordHomepageState extends State<PasswordHomepage> {
     var size = MediaQuery.of(context).size;
     Color primaryColor = Theme.of(context).primaryColor;
 
-    print(iconNames.indexOf('Icon 10'));
+    // print(iconNames.indexOf('Icon 10'));
 
     void changeBrightness() {
     DynamicTheme.of(context).setBrightness(Theme.of(context).brightness == Brightness.dark? Brightness.light: Brightness.dark);
@@ -137,7 +137,7 @@ class _PasswordHomepageState extends State<PasswordHomepage> {
                             });
                             //To show a snackbar with the UNDO button
                             Scaffold.of(context).showSnackBar(SnackBar(
-                                content: Text("Item deleted"),
+                                content: Text("Password deleted"),
                                 action: SnackBarAction(
                                     label: "UNDO",
                                     onPressed: () {
@@ -168,7 +168,8 @@ class _PasswordHomepageState extends State<PasswordHomepage> {
                                   height: 48,
                                   width: 48,
                                   child: CircleAvatar(
-                                      backgroundColor: color, child: icons[i])),
+                                      backgroundColor: color, 
+                                      child: icons[i])),
                               subtitle: password.userName != ""
                                   ? Text(
                                       password.userName,

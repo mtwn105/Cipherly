@@ -71,7 +71,7 @@ class _GreetingsPageState extends State<GreetingsPage> {
                     borderRadius: BorderRadius.circular(32)
                   ),
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                               builder: (BuildContext context) =>
