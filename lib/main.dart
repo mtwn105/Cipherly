@@ -19,8 +19,6 @@ class _MyAppState extends State<MyApp> {
   bool loading = true;
   int primarycolorCode;
   Color primaryColor = Color(0xff5153FF);
-  // bool enableDarkTheme = false;
-  // Brightness brightness = Brightness.light;
 
   checkPrimaryColr() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();

@@ -63,8 +63,11 @@ class _PasswordHomepageState extends State<PasswordHomepage> {
     // print(iconNames.indexOf('Icon 10'));
 
     void changeBrightness() {
-    DynamicTheme.of(context).setBrightness(Theme.of(context).brightness == Brightness.dark? Brightness.light: Brightness.dark);
-  }
+      DynamicTheme.of(context).setBrightness(
+          Theme.of(context).brightness == Brightness.dark
+              ? Brightness.light
+              : Brightness.dark);
+    }
 
     return Scaffold(
       body: Column(
@@ -168,8 +171,7 @@ class _PasswordHomepageState extends State<PasswordHomepage> {
                                   height: 48,
                                   width: 48,
                                   child: CircleAvatar(
-                                      backgroundColor: color, 
-                                      child: icons[i])),
+                                      backgroundColor: color, child: icons[i])),
                               subtitle: password.userName != ""
                                   ? Text(
                                       password.userName,

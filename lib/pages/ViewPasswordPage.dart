@@ -206,7 +206,7 @@ class _ViewPasswordState extends State<ViewPassword> {
             children: <Widget>[
               Text(
                 "To decrypt the password enter your master password:",
-                style: TextStyle(fontFamily: 'Subtitle', color: Colors.black54),
+                style: TextStyle(fontFamily: 'Subtitle'),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),

@@ -151,6 +151,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.6"
+  password_strength:
+    dependency: "direct main"
+    description:
+      name: password_strength
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.2"
   path:
     dependency: transitive
     description:
