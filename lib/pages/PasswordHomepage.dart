@@ -1,9 +1,8 @@
-import 'dart:math';
-
 import 'package:cipherly/bloc/PasswordBloc.dart';
 import 'package:cipherly/database/Database.dart';
 import 'package:cipherly/model/PasswordModel.dart';
 import 'package:cipherly/pages/ViewPasswordPage.dart';
+import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 
@@ -13,6 +12,10 @@ import 'SettingsPage.dart';
 class PasswordHomepage extends StatefulWidget {
   @override
   _PasswordHomepageState createState() => _PasswordHomepageState();
+
+  Brightness brigntness = Brightness.light;
+
+  PasswordHomepage({this.brigntness});
 }
 
 class _PasswordHomepageState extends State<PasswordHomepage> {
@@ -57,6 +60,15 @@ class _PasswordHomepageState extends State<PasswordHomepage> {
     var size = MediaQuery.of(context).size;
     Color primaryColor = Theme.of(context).primaryColor;
 
+    // print(iconNames.indexOf('Icon 10'));
+
+    void changeBrightness() {
+      DynamicTheme.of(context).setBrightness(
+          Theme.of(context).brightness == Brightness.dark
+              ? Brightness.light
+              : Brightness.dark);
+    }
+
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -68,24 +80,39 @@ class _PasswordHomepageState extends State<PasswordHomepage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text("Cipherly",
-                        style: TextStyle(
-                            fontFamily: "Title",
-                            fontSize: 32,
-                            color: primaryColor)),
-                    IconButton(
-                      icon: Icon(
-                        Icons.settings,
-                        color: primaryColor,
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    SettingsPage()));
-                      },
-                    )
+                    Text(
+                      "Cipherly",
+                      style: TextStyle(
+                          fontFamily: "Title",
+                          fontSize: 32,
+                          color: primaryColor),
+                    ),
+                    Row(
+                      children: <Widget>[
+                        IconButton(
+                          icon: Icon(
+                            Icons.wb_sunny,
+                            color: primaryColor,
+                          ),
+                          onPressed: () {
+                            changeBrightness();
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            Icons.settings,
+                            color: primaryColor,
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        SettingsPage()));
+                          },
+                        ),
+                      ],
+                    ),
                   ],
                 )),
           ),
@@ -99,52 +126,66 @@ class _PasswordHomepageState extends State<PasswordHomepage> {
                       itemCount: snapshot.data.length,
                       itemBuilder: (BuildContext context, int index) {
                         Password password = snapshot.data[index];
-
                         int i = 0;
-                        while (i < iconNames.length) {
-                          if (password.icon == iconNames[i]) {
-                            break;
-                          }
-                          i++;
-                        }
-
+                        i = iconNames.indexOf(password.icon);
                         Color color = hexToColor(password.color);
-
-                        return InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        ViewPassword(
-                                          password: password,
-                                        )));
+                        return Dismissible(
+                          key: ObjectKey(password.id),
+                          onDismissed: (direction) {
+                            var item = password;
+                            //To delete
+                            DBProvider.db.deletePassword(item.id);
+                            setState(() {
+                              snapshot.data.removeAt(index);
+                            });
+                            //To show a snackbar with the UNDO button
+                            Scaffold.of(context).showSnackBar(SnackBar(
+                                content: Text("Password deleted"),
+                                action: SnackBarAction(
+                                    label: "UNDO",
+                                    onPressed: () {
+                                      DBProvider.db.newPassword(item);
+                                      setState(() {
+                                        snapshot.data.insert(index, item);
+                                      });
+                                    })));
                           },
-                          child: ListTile(
-                            title: Text(
-                              password.appName,
-                              style: TextStyle(
-                                fontFamily: 'Title',
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          ViewPassword(
+                                            password: password,
+                                          )));
+                            },
+                            child: ListTile(
+                              title: Text(
+                                password.appName,
+                                style: TextStyle(
+                                  fontFamily: 'Title',
+                                ),
                               ),
+                              leading: Container(
+                                  height: 48,
+                                  width: 48,
+                                  child: CircleAvatar(
+                                      backgroundColor: color, child: icons[i])),
+                              subtitle: password.userName != ""
+                                  ? Text(
+                                      password.userName,
+                                      style: TextStyle(
+                                        fontFamily: 'Subtitle',
+                                      ),
+                                    )
+                                  : Text(
+                                      "No username specified",
+                                      style: TextStyle(
+                                        fontFamily: 'Subtitle',
+                                      ),
+                                    ),
                             ),
-                            leading: Container(
-                                height: 48,
-                                width: 48,
-                                child: CircleAvatar(
-                                    backgroundColor: color, child: icons[i])),
-                            subtitle: password.userName != ""
-                                ? Text(
-                                    password.userName,
-                                    style: TextStyle(
-                                      fontFamily: 'Subtitle',
-                                    ),
-                                  )
-                                : Text(
-                                    "No username specified",
-                                    style: TextStyle(
-                                      fontFamily: 'Subtitle',
-                                    ),
-                                  ),
                           ),
                         );
                       },
@@ -154,7 +195,7 @@ class _PasswordHomepageState extends State<PasswordHomepage> {
                       child: Text(
                         "No Passwords Saved. \nClick \"+\" button to add a password",
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: Colors.black54),
+                        // style: TextStyle(color: Colors.black54),
                       ),
                     );
                   }

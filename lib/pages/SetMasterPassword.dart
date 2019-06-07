@@ -1,6 +1,8 @@
 import 'package:cipherly/pages/PasswordHomepage.dart';
 import 'package:flutter/material.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SetMasterPassword extends StatefulWidget {
   @override
@@ -10,15 +12,37 @@ class SetMasterPassword extends StatefulWidget {
 class _SetMasterPasswordState extends State<SetMasterPassword> {
   TextEditingController masterPassController = TextEditingController();
 
-  Future<Null> getMasterPass() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String masterPass = prefs.getString('master') ?? "";
+  Future<Null> getMasterPass() async {    
+
+    final storage = new FlutterSecureStorage();   
+    String masterPass = await storage.read(key: 'master') ?? '';
     masterPassController.text = masterPass;
+
+  }
+
+  saveMasterPass(String masterPass) async{
+    final storage = new FlutterSecureStorage();   
+
+    await storage.write(key: 'master', value: masterPass);
+  }
+
+  authenticate() async {
+    var localAuth = LocalAuthentication();
+    bool didAuthenticate = await localAuth.authenticateWithBiometrics(
+        localizedReason: 'Please authenticate to change master password',
+        stickyAuth: true);
+
+    if (!didAuthenticate) {
+      Navigator.pop(context);
+    }
+
+    print(didAuthenticate);
   }
 
   @override
   void initState() {
     super.initState();
+    authenticate();
     getMasterPass();
   }
 
@@ -40,6 +64,7 @@ class _SetMasterPasswordState extends State<SetMasterPassword> {
                     style: TextStyle(
                       fontFamily: "Title",
                       fontSize: 32,
+                      color: primaryColor
                     ))),
           ),
           Padding(
@@ -48,7 +73,7 @@ class _SetMasterPasswordState extends State<SetMasterPassword> {
                   "Set Master Passwords for your all passwords. Keep your Master Password safe with you. This password will be used to unlock your encrypted passwords.",
                   style: TextStyle(
                       fontSize: 16,
-                      color: Colors.black54,
+                      // color: Colors.black54,
                       fontStyle: FontStyle.italic,
                       fontFamily: "Subtitle"))),
           Expanded(
@@ -82,10 +107,7 @@ class _SetMasterPasswordState extends State<SetMasterPassword> {
                   ),
                   onPressed: () async {
                     if (masterPassController.text.isNotEmpty) {
-                      SharedPreferences prefs =
-                          await SharedPreferences.getInstance();
-                      await prefs.setString(
-                          'master', masterPassController.text);
+                      saveMasterPass(masterPassController.text.trim());
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(

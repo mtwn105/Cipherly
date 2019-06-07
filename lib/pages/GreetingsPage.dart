@@ -27,9 +27,9 @@ class _GreetingsPageState extends State<GreetingsPage> {
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(24.0, 8, 24, 8),
-                child: Text("Welcome to Cipherly!",                    textAlign: TextAlign.center,
-
-                    style: TextStyle(fontFamily: "Title", fontSize: 36)),
+                child: Text("Welcome to Cipherly!",                    
+                textAlign: TextAlign.center,
+                style: TextStyle(fontFamily: "Title", fontSize: 36)),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(24.0, 8, 24, 8),
@@ -39,7 +39,9 @@ class _GreetingsPageState extends State<GreetingsPage> {
                     style: TextStyle(
                         fontFamily: "Subtitle",
                         fontSize: 18,
-                        color: Colors.black54)),
+                        // color: Colors.black54
+                        ),
+                        ),
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(24.0, 8, 24, 8),
@@ -54,7 +56,9 @@ class _GreetingsPageState extends State<GreetingsPage> {
                     style: TextStyle(
                         fontFamily: "Subtitle",
                         fontSize: 18,
-                        color: Colors.black54)),
+                        // color: Colors.black54
+                        ),
+                        ),
               ),SizedBox(
                 height: 20,
               ),
@@ -67,7 +71,7 @@ class _GreetingsPageState extends State<GreetingsPage> {
                     borderRadius: BorderRadius.circular(32)
                   ),
                     onPressed: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                               builder: (BuildContext context) =>

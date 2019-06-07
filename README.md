@@ -14,9 +14,9 @@ A Master Password is used to encrypt the passwords and it can be only decrypted 
 - [ ] Add default social networks like Facebook, Google, etc.
 - [x] Add custom passwords
 - [ ] Generate Random Password
-- [ ] Password Strength Checker
+- [x] Password Strength Checker
 - [ ] Add Search
-- [ ] Add Fingerprint or Custom Pin Lock to secure all passwords
+- [x] Add Fingerprint or Custom Pin Lock to secure all passwords
 
 ## Screenshots
 
