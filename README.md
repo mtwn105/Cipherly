@@ -6,17 +6,18 @@ Cipherly is a password manager built using Flutter based on AES Encryption. Ciph
 
 A Master Password is used to encrypt the passwords and it can be only decrypted using it.
 
-## Features to add
+## FeatureS:
 
 - [x] Basic Password Store
 - [x] Encrypt Decrypt Password
 - [x] Encrypt using Master Password as Key
-- [ ] Add default social networks like Facebook, Google, etc.
-- [x] Add custom passwords
+- [ ] Default social networks like Facebook, Google, etc.
+- [x] Custom Passwords
 - [ ] Generate Random Password
 - [x] Password Strength Checker
-- [ ] Add Search
-- [x] Add Fingerprint or Custom Pin Lock to secure all passwords
+- [ ] Search
+- [x] Dark Mode
+- [x] Fingerprint or Custom Pin Lock to secure all passwords
 
 ## Screenshots
 
