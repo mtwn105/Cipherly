@@ -20,7 +20,6 @@ class _SettingsPageState extends State<SettingsPage> {
         selectedColor = Color(0xff5153FF);
       } else {
         selectedColor = Color(prefs.getInt('primaryColor'));
-        
       }
     });
   }
@@ -40,75 +39,75 @@ class _SettingsPageState extends State<SettingsPage> {
     Color primaryColor = Theme.of(context).primaryColor;
 
     return Scaffold(
-        key: scaffoldKey,
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Container(
-                  margin: EdgeInsets.only(top: size.height * 0.05),
-                  child: Text("Settings",
-                      style: TextStyle(
-                          fontFamily: "Title",
-                          fontSize: 32,
-                          color: primaryColor))),
+      key: scaffoldKey,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Container(
+                margin: EdgeInsets.only(top: size.height * 0.05),
+                child: Text("Settings",
+                    style: TextStyle(
+                        fontFamily: "Title",
+                        fontSize: 32,
+                        color: primaryColor))),
+          ),
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (BuildContext context) => SetMasterPassword()));
+            },
+            child: ListTile(
+              title: Text(
+                "Master Password",
+                style: TextStyle(
+                  fontFamily: 'Title',
+                ),
+              ),
+              subtitle: Text(
+                "Change your Master Password",
+                style: TextStyle(
+                  fontFamily: 'Subtitle',
+                ),
+              ),
             ),
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            SetMasterPassword()));
-              },
-              child: ListTile(
+          ),
+          Column(
+            children: <Widget>[
+              ListTile(
                 title: Text(
-                  "Master Password",
+                  "Accent Color",
                   style: TextStyle(
                     fontFamily: 'Title',
                   ),
                 ),
                 subtitle: Text(
-                  "Change your Master Password",
+                  "Change Accent Color",
                   style: TextStyle(
                     fontFamily: 'Subtitle',
                   ),
                 ),
               ),
-            ),
-            Column(
-              children: <Widget>[
-                ListTile(
-                  title: Text(
-                    "Accent Color",
-                    style: TextStyle(
-                      fontFamily: 'Title',
-                    ),
-                  ),
-                  subtitle: Text(
-                    "Change Accent Color",
-                    style: TextStyle(
-                      fontFamily: 'Subtitle',
-                    ),
-                  ),
-                ),
-                MaterialColorPicker(
-                  onColorChange: (Color color) {
-                    pickedColor = color;
-                    changeColor(color);
-                    setState(() {
-                      selectedColor = color;
-                    });
-                  },
-                  circleSize: 60,
-                  selectedColor: selectedColor,
-                ),
-              ],
-            )
-          ],
-        ));
+              MaterialColorPicker(
+                onColorChange: (Color color) {
+                  pickedColor = color;
+                  changeColor(color);
+                  setState(() {
+                    selectedColor = color;
+                  });
+                },
+                circleSize: 60,
+                selectedColor: selectedColor,
+              ),
+            ],
+          )
+        ],
+      ),
+    );
   }
 
   void changeColor(Color color) {

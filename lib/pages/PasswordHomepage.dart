@@ -4,7 +4,6 @@ import 'package:cipherly/model/PasswordModel.dart';
 import 'package:cipherly/pages/ViewPasswordPage.dart';
 import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:encrypt/encrypt.dart' as encrypt;
 
 import 'AddPasswordPage.dart';
 import 'SettingsPage.dart';

@@ -13,7 +13,7 @@ A Master Password is used to encrypt the passwords and it can be only decrypted 
 - [x] Encrypt using Master Password as Key
 - [ ] Default social networks like Facebook, Google, etc.
 - [x] Custom Passwords
-- [ ] Generate Random Password
+- [x] Generate Random Password
 - [x] Password Strength Checker
 - [ ] Search
 - [x] Dark Mode
