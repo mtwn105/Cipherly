@@ -1,6 +1,7 @@
 import 'package:cipherly/database/Database.dart';
 import 'package:cipherly/model/PasswordModel.dart';
 import 'package:cipherly/pages/PasswordHomepage.dart';
+import 'package:cipherly/random_string.dart';
 import 'package:flutter/material.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -131,6 +132,9 @@ class _AddPasswordState extends State<AddPassword> {
 
   double passwordStrength = 0.0;
   Color passwordStrengthBarColor = Colors.red;
+  bool obscureText = true;
+  String show_hide = 'Show Password';
+  var scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -141,12 +145,32 @@ class _AddPasswordState extends State<AddPassword> {
     super.initState();
   }
 
+  checkPassStrength(String pass) {
+    setState(() {
+      passwordStrength = estimatePasswordStrength(pass);
+      Color passwordStrengthBarColor = Colors.red;
+      if (passwordStrength < 0.4) {
+        passwordStrengthBarColor = Colors.red;
+      } else if (passwordStrength > 0.4 && passwordStrength < 0.7) {
+        passwordStrengthBarColor = Colors.deepOrangeAccent;
+      } else if (passwordStrength < 0.7) {
+        passwordStrengthBarColor = Colors.orange;
+      } else if (passwordStrength > 0.7 || passwordStrength == 0.7) {
+        passwordStrengthBarColor = Colors.green;
+      }
+      setState(() {
+        this.passwordStrengthBarColor = passwordStrengthBarColor;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     Color primaryColor = Theme.of(context).primaryColor;
 
     return Scaffold(
+      key: scaffoldKey,
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -208,26 +232,9 @@ class _AddPasswordState extends State<AddPassword> {
                       //   }
                       // },
                       onChanged: (pass) {
-                        setState(() {
-                          passwordStrength = estimatePasswordStrength(pass);
-                          Color passwordStrengthBarColor = Colors.red;
-                          if (passwordStrength < 0.4) {
-                            passwordStrengthBarColor = Colors.red;
-                          } else if (passwordStrength > 0.4 && passwordStrength < 0.7) {
-                            passwordStrengthBarColor = Colors.deepOrangeAccent;
-                          } else if (passwordStrength < 0.7) {
-                            passwordStrengthBarColor = Colors.orange;
-                          } else if (passwordStrength > 0.7 ||
-                              passwordStrength == 0.7) {
-                            passwordStrengthBarColor = Colors.green;
-                          }
-                          setState(() {
-                            this.passwordStrengthBarColor =
-                                passwordStrengthBarColor;
-                          });
-                        });
+                        checkPassStrength(pass);
                       },
-                      obscureText: true,
+                      obscureText: obscureText,
                       decoration: InputDecoration(
                         // errorText: 'Please enter valid password',
                         labelText: "Password",
@@ -240,14 +247,58 @@ class _AddPasswordState extends State<AddPassword> {
                     ),
                   ),
                   Padding(
+                    padding: EdgeInsets.only(),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        FlatButton(
+                          onPressed: () {
+                            String pass = randomAlphaNumeric(10);
+                            passwordController.text = pass;
+                            checkPassStrength(pass);
+                          },
+                          child: Text('Generate'),
+                        ),
+                        FlatButton(
+                          onPressed: () {
+                            setState(() {
+                              obscureText = !obscureText;
+                              if (obscureText) {
+                                show_hide = 'Show Password';
+                              } else {
+                                show_hide = 'Hide Password';
+                              }
+                            });
+                          },
+                          child: Text(show_hide),
+                        ),
+                        FlatButton(
+                          onPressed: () {
+                            Clipboard.setData(new ClipboardData(
+                                text: passwordController.text));
+                            scaffoldKey.currentState.showSnackBar(
+                              SnackBar(
+                                content: Text("Copied to Clipboard"),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          },
+                          child: Text('Copy'),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 10, horizontal: 15),
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Container(
                         height: 10,
-                        width: passwordStrength == 0 ? 5 : MediaQuery.of(context).size.width *
-                            passwordStrength,
+                        width: passwordStrength == 0
+                            ? 5
+                            : MediaQuery.of(context).size.width *
+                                passwordStrength,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           color: passwordStrengthBarColor,
