@@ -2,6 +2,8 @@
 
 ### Cipherly is first open source Password Manager made using Flutter!
 
+![Cipherly](https://user-images.githubusercontent.com/12975481/159705559-c15afa4d-9784-4058-9ae9-8d662fb8909c.png)
+
 Cipherly is a password manager built using Flutter based on AES Encryption. Cipherly securely stores the passwords and protect them using AES Encryption.
 
 A Master Password is used to encrypt the passwords and it can be only decrypted using it.
